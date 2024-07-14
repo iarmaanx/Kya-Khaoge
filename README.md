@@ -2,7 +2,7 @@
 
 I'm giving you a treat 🍕, you can have what you like.
 
-Join me at [Live Link](https://your-live-link.com)
+Join me at (https://your-live-link.com)
 
 ## About
 
