@@ -11,32 +11,6 @@ Kya Kahoge is a simple web application designed to help you decide what to eat. 
 ## Screenshot
 ![screenshot](./src/1.png)
 
-## How to Install
-
-To run Kya Kahoge locally, follow these steps:
-
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/iarmaansingh/Kya-Khaoge.git
-    ```
-
-2. **Navigate to the project directory**:
-    ```bash
-    cd Kya-Khaoge
-    ```
-
-3. **Install the required dependencies**:
-    ```bash
-    npm install
-    ```
-
-4. **Start the development server**:
-    ```bash
-    npm run dev
-    ```
-
-The app should now be running on `http://localhost:3000`.
-
 ## Contribute
 
 I welcome contributions to Kya Kahoge! If you find an issue or have an idea for a new feature.
