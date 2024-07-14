@@ -2,7 +2,7 @@
 
 I'm giving you a treat 🍕, you can have what you like.
 
-Join me at (https://your-live-link.com)
+It's live at (https://kya-khaoge.netlify.app/)
 
 ## About
 
