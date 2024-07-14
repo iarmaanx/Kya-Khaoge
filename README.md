@@ -8,6 +8,9 @@ It's live at (https://kya-khaoge.netlify.app/)
 
 Kya Kahoge is a simple web application designed to help you decide what to eat. The app features a straightforward user interface with two food images, allowing you to easily choose between two meal options.
 
+## Screenshot
+![screenshot](./src/1.png)
+
 ## How to Install
 
 To run Kya Kahoge locally, follow these steps:
