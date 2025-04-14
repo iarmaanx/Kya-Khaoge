@@ -1,54 +1,55 @@
 import { useState, useEffect } from 'react';
+import vegLogo from './veg-logo.png';
+import nonVegLogo from './non-veg-logo.jpg';
 
 function App() {
   const [img1, setImg1] = useState(null);
   const [img2, setImg2] = useState(null);
-
-  //Food Names
   const [name1, setName1] = useState(null);
   const [name2, setName2] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  const vegItems = ['pasta', 'salad', 'dessert', 'rice'];
 
-  // Logo Image source
-  const nonVegLogo = "./src/non-veg-logo.jpg";
-  const vegLogo = "./src/veg-logo.png";
+  const isVeg = (name) => vegItems.includes(name?.toLowerCase());
 
-  async function getData1() {
+  const getData = async (clickedImage = null) => {
+    setLoading(true);
     const url = "https://foodish-api.com/api/";
-    let response = await fetch(url);
-    let data = await response.json();
-    setImg1(data);
-    console.log(data);
-  }
-
-  async function getData2() {
-    const url = "https://foodish-api.com/api/";
-    let response = await fetch(url);
-    let data = await response.json();
-    setImg2(data);
-    console.log(data);
-  }
+    
+    if (clickedImage === null) {
+      // Initial load - fetch both images
+      const [res1, res2] = await Promise.all([fetch(url), fetch(url)]);
+      const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+      setImg1(data1);
+      setImg2(data2);
+    } else {
+      // Update only the unselected image
+      const res = await fetch(url);
+      const data = await res.json();
+      
+      if (clickedImage === 1) {
+        setImg2(data);
+      } else {
+        setImg1(data);
+      }
+      setSelectedImage(clickedImage);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    getData1();
-  }, []); // Empty dependency array ensures useEffect runs only once
+    getData(); // This will now load both images initially
+  }, []);
 
-  useEffect(() => {
-    getData2();
-  }, []); // Empty dependency array ensures useEffect runs only once
-
-  // Function to extract the name from the API output
   const extractFoodName = (url) => {
     try {
-      const urlString = String(url); // Ensure url is a string
+      const urlString = String(url);
       const parts = urlString.split('/');
       const lastPart = parts[parts.length - 1];
-      const nameWithExt = lastPart.split('.').slice(0, -1).join('.'); // Remove the file extension
-  
-      // Remove numbers from the food name
-      const foodName = nameWithExt.replace(/\d+/g, ''); // Regular expression to remove all digits
-  
-      console.log('Extracted food name:', foodName);
+      const nameWithExt = lastPart.split('.').slice(0, -1).join('.');
+      const foodName = nameWithExt.replace(/\d+/g, '');
       return foodName;
     } catch (error) {
       console.log('Food name could not be extracted.', error);
@@ -56,86 +57,67 @@ function App() {
     }
   };
 
-
-  // Extract food names when img1 or img2 changes
-useEffect(() => {
-    if (img1) {
-      setName1(extractFoodName(img1.image));
-    }
-  }, [img1]);
-
-console.log(name1)
-
   useEffect(() => {
-    if (img2) {
-      setName2(extractFoodName(img2.image));
-    }
-  }, [img2]);
-  console.log(name2)
-
-let logo1 = "";
-let logo2 = "";
-
-if(name1 == 'biryani'| name1 == 'butter-chicken'){
-   logo1 = nonVegLogo;
-}
-else{
-  logo1 = vegLogo;
-}
-
-if(name2 == 'biryani'| name2 == 'butter-chicken'){
-  logo2 = nonVegLogo;
-}
-else{
-  logo2 = vegLogo;
-}
-
-
-
+    if (img1) setName1(extractFoodName(img1.image));
+    if (img2) setName2(extractFoodName(img2.image));
+  }, [img1, img2]);
 
   return (
-    <>
-      <h1 className='text-yellow-700 text-6xl font-bold text-center dancing-script-bold -mt-2'>
-        Kya Khaoge 😋?
-      </h1>
-      <div className='flex items-center justify-center gap-24 mt-16 flex-wrap'>
-        <div>
-          {img1 ? (
-            <div className='flex flex-col items-center'>
+    <div className='bg-gray-900 min-h-screen px-4 py-2'>
+      <h1 className='text-yellow-500 text-4xl mb-10 font-bold text-center'>Kya Khaoge 😋?</h1>
+
+      
+
+      <div className='flex flex-col md:flex-row items-center justify-center gap-12'>
+        {/* First Image */}
+        <div className='text-center'>
+          {loading || !img1 ? (
+            <p className='text-white h-96 w-80 flex items-center justify-center'>Loading...</p>
+          ) : (
+            <div>
               <img
                 src={img1.image}
-                alt="Food"
-                className='h-96 w-96 border-slate-800 border-2 rounded cursor-pointer'
-                onClick={() => getData2()}
+                alt='Food 1'
+                className={`h-96 w-80 object-cover border-4 ${selectedImage === 1 ? 'border-green-500' : 'border-yellow-300'} rounded-lg cursor-pointer shadow-lg`}
+                onClick={() => getData(1)}
               />
-             <div className='flex mt-4 items-center'>
-                <p className='text-white mr-2'>{name1}</p>
-                <img src={logo1} className='h-4 w-4 mt-0.5' /></div>
+              <div className='flex justify-center items-center mt-2'>
+                <p className='text-white mr-2 capitalize'>{name1}</p>
+                <img src={isVeg(name1) ? vegLogo : nonVegLogo} className='h-5 w-5' alt='Type' />
+              </div>
             </div>
-          ) : (
-            <p className='text-white h-96 w-96 text-center pt-48'>Loading...</p>
           )}
         </div>
-        <h2 className='text-white text-xl font-bold'>Or</h2>
-        <div>
-          {img2 ? (
-            <div className='flex flex-col items-center'>
+
+        <h2 className='text-white text-xl font-bold'>OR</h2>
+
+        {/* Second Image */}
+        <div className='text-center'>
+          {loading || !img2 ? (
+            <p className='text-white h-96 w-80 flex items-center justify-center'>Loading...</p>
+          ) : (
+            <div>
               <img
                 src={img2.image}
-                alt="Food"
-                className='h-96 w-96 border-slate-800 border-2 rounded cursor-pointer'
-                onClick={() => getData1()}
+                alt='Food 2'
+                className={`h-96 w-80 object-cover border-4 ${selectedImage === 2 ? 'border-green-500' : 'border-yellow-300'} rounded-lg cursor-pointer shadow-lg`}
+                onClick={() => getData(2)}
               />
-              <div className='flex mt-4 items-center'>
-                <p className='text-white mr-2'>{name2}</p>
-                <img src={logo2} className='h-4 w-4 mt-0.5' /></div>
+              <div className='flex justify-center items-center mt-2'>
+                <p className='text-white mr-2 capitalize'>{name2}</p>
+                <img src={isVeg(name2) ? vegLogo : nonVegLogo} className='h-5 w-5' alt='Type' />
+              </div>
             </div>
-          ) : (
-            <p className='text-white h-96 w-96 text-center pt-48'>Loading...</p>
           )}
         </div>
       </div>
-    </>
+
+      {/* How to Play */}
+      <div className='bg-yellow-100 text-gray-800 p-4 mt-24 rounded shadow-md max-w-xl mx-auto mb-8'>
+        <h2 className='text-xl font-semibold mb-2'>How to Play 🍽️</h2>
+        <p>Select one of the two food items. A new image will replace the unselected one. Keep playing and discover what you love to eat!</p>
+      </div>
+    </div>
   );
 }
 
