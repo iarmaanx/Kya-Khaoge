@@ -13,7 +13,7 @@ function ContentPage() {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const vegItems = ['pasta', 'salad', 'dessert', 'rice', 'dosa', 'burger', 'pizza', 'idly']; // Veg items list
+  const vegItems = ['pasta', 'salad', 'dessert', 'rice', 'dosa', 'burger', 'pizza', 'idly' ,'samosa']; // Veg items list
 
   // Function to check if an item is vegetarian
   const isVeg = (name) => vegItems.includes(name?.toLowerCase());
